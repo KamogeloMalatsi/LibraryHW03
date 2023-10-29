@@ -1,0 +1,28 @@
+﻿@model KamogeloLibrary.Models.types
+
+@{
+    Layout = null;
+}
+
+<div>
+    <h5>Type</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.name)
+        </dd>
+
+    </dl>
+</div>
+@*<p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.typeId }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>*@
+<p>
+    <a href="@Url.Action("Maintenance", "Home")" class="btn btn-primary btn-sm">Back to List</a>
+</p>
+

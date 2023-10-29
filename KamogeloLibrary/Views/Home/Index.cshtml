@@ -1,0 +1,201 @@
+﻿@model KamogeloLibrary.Models.HomeViewModel
+@using PagedList;
+@using PagedList.Mvc;
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+@{
+    ViewBag.Title = "Home Page";
+    string bookStatus = "";
+}
+
+<div class="container-fluid">
+    <div class="row row-cols-2">
+        <div class="col">
+            <div class="row row-cols-2">
+                <div class="col">
+                    <h5><b>STUDENTS</b></h5>
+                </div>
+                <div class="col">
+                    <a href="#" class="create-link btn btn-outline-secondary" data-url="@Url.Action("CreateStudent", "Home")"><b>Add Student</b></a>
+                </div>
+            </div>
+            <table class="table table-hover">
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Surname
+                    </th>
+                    <th>
+                        Birth Date
+                    </th>
+                    <th>
+                        Gender
+                    </th>
+                    <th>
+                        Class
+                    </th>
+                    <th>
+                        Point
+                    </th>
+                </tr>
+
+                @foreach (var item in Model.Students2)
+                {
+                    <tr>
+                        <td>
+                            @item.name
+                        </td>
+                        <td>
+                            @item.surname
+                        </td>
+                        <td>
+                            @item.birthdate
+                        </td>
+                        <td>
+                            @item.gender
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.@class)
+                        </td>
+                        <td>
+                            @item.point
+                        </td>
+                    </tr>
+                }
+            </table>
+            Page @ViewBag.PageNumber1 of @ViewBag.TotalPages
+
+            @Html.PagedListPager(Model.Students2, page1 => Url.Action("Index", new { page1 }))
+        </div>
+        <div class="col">
+            <div class="row row-cols-2">
+                <div class="col">
+                    <h5><b>BOOKS</b></h5>
+                </div>
+                <div class="col">
+                    <a href="#" class="create-link btn btn-outline-secondary" data-url="@Url.Action("CreateBook", "Home")"><b>Add Book</b></a>
+                </div>
+            </div>
+            <table class="table table-hover">
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Page Count
+                    </th>
+                    <th>
+                        Point
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Author
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                </tr>
+
+                @foreach (var item in Model.Books2)
+                {
+                    <tr>
+                        <td>
+                            @item.name
+                        </td>
+                        <td>
+                            @item.pagecount
+                        </td>
+                        <td>
+                            @item.point
+                        </td>
+                        @foreach (var borrow in Model.Borrows)
+                        {
+                            if (item.bookId == borrow.bookId)
+                            {
+                                if (borrow.broughtDate == null)
+                                {
+                                    bookStatus = "Out";
+                                }
+                                else
+                                {
+                                    bookStatus = "Available";
+                                }
+                            }
+                            else
+                            {
+                                bookStatus = "Available";
+                            }
+                        }
+                        <td>@bookStatus</td>
+                        <td>@item.authors.name @item.authors.surname</td>
+                        <td>@item.types.name</td>
+                    </tr>
+                }
+            </table>
+            Page @ViewBag.PageNumber2 of @ViewBag.TotalPages2
+
+            @Html.PagedListPager(Model.Books2, page2 => Url.Action("Index", new { page2 }))
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">CREATE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-content">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        // Function to handle Edit link click event in the Combined View and Details modal
+        //$(".edit-link, .edit-link-in-modal").click(function (e) {
+        //    e.preventDefault();
+        //    var url = $(this).data("url");
+
+        //    $.get(url, function (data) {
+        //        $("#modal-content").empty();
+        //        $("#modal-content").html(data);
+        //        $("#myModal").modal("show");
+        //    });
+        //});
+
+        // Function to handle form submission within the modal
+        $("#modal-content").on("submit", "form", function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr("action");
+            var formData = form.serialize();
+
+            $.post(url, formData, function (data) {
+                $("#myModal").modal("hide");
+                location.reload();
+            });
+        });
+
+        // Function to handle other links (details, delete, create) within the modal
+        $(".create-link").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+
+</script>

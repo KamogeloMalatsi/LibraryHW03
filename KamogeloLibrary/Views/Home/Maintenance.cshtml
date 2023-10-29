@@ -1,0 +1,204 @@
+﻿@model KamogeloLibrary.Models.MaintenanceViewModel
+@using PagedList;
+@using PagedList.Mvc;
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Maintenance";
+}
+
+<div class="container-fluid" style="width:100%">
+    <div class="row row-cols-2">
+        <div class="col">
+            <div class="row row-cols-2">
+                <div class="col">
+                    <h5><b>AUTHORS</b></h5>
+                </div>
+                <div class="col">
+                    <a href="#" class="create-link btn btn-outline-secondary" data-url="@Url.Action("CreateAuthor", "Home")"><b>Add Author</b></a>
+                </div>
+            </div>
+            <table class="table table-hover">
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Surname
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.Authors2)
+                {
+                    <tr>
+                        <td>
+                            @item.name
+                        </td>
+                        <td>
+                            @item.surname
+                        </td>
+                        <td>
+                            <a href="#" class="edit-link" data-url="@Url.Action("EditAuthor", "Home", new { id = item.authorId })">Edit</a>
+                            @*<a href="#" class="details-link" data-url="@Url.Action("DetailsAuthor", "Home", new { id = item.authorId })">Details</a>*@
+                            <a href="#" class="delete-link" data-url="@Url.Action("DeleteAuthor", "Home", new { id = item.authorId })">Delete</a>
+                        </td>
+                    </tr>
+                }
+
+            </table>
+            Page @ViewBag.PageNumber1 of @ViewBag.TotalPages
+
+            @Html.PagedListPager(Model.Authors2, page1 => Url.Action("Maintenance", new { page1 }))
+        </div>
+        <div class="col">
+            <div class="row row-cols-2">
+                <div class="col">
+                    <h5><b>TYPES</b></h5>
+                </div>
+                <div class="col">
+                    <a href="#" class="create-link btn btn-outline-secondary" data-url="@Url.Action("CreateType", "Home")"><b>Add Type</b></a>
+                </div>
+            </div>
+            <table class="table table-hover">
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.Types2)
+                {
+                    <tr>
+                        <td>
+                            @item.name
+                        </td>
+                        <td>
+                            <a href="#" class="edit-link" data-url="@Url.Action("EditType", "Home", new { id = item.typeId })">Edit</a>
+                            @*<a href="#" class="details-link" data-url="@Url.Action("DetailsType", "Home", new { id = item.typeId })">Details</a>*@
+                            <a href="#" class="delete-link" data-url="@Url.Action("DeleteType", "Home", new { id = item.typeId })">Delete</a>
+
+                        </td>
+                    </tr>
+                }
+
+            </table>
+            Page @ViewBag.PageNumber2 of @ViewBag.TotalPages2
+
+            @Html.PagedListPager(Model.Types2, page2 => Url.Action("Maintenance", new { page2 }))
+        </div>
+    </div>
+
+
+    <div style="padding-top:20px">
+        <div class="row row-cols-2">
+            <div class="col">
+                <h5><b>BORROWS</b></h5>
+            </div>
+            <div class="col">
+                <a href="#" class="create-link btn btn-outline-secondary" data-url="@Url.Action("CreateBorrow", "Home")"><b>Borrow A Book</b></a>
+            </div>
+        </div>
+        <table class="table table-hover">
+            <tr>
+                <th>
+                    Taken Date
+                </th>
+                <th>
+                    Brought Date
+                </th>
+                <th>
+                    Book Name
+                </th>
+                <th>
+                    Student Name
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.Borrows2)
+            {
+                <tr>
+                    <td>
+                        @item.takenDate
+                    </td>
+                    <td>
+                        @item.broughtDate
+                    </td>
+                    <td>
+                        @item.books.name
+                    </td>
+                    <td>
+                        @item.students.name @item.students.surname
+                    </td>
+                    <td>
+                        <a href="#" class="edit-link" data-url="@Url.Action("EditBorrow", "Home", new { id = item.borrowId })">Edit</a>
+                        @*<a href="#" class="details-link" data-url="@Url.Action("DetailsBorrow", "Home", new { id = item.borrowId })">Details</a>*@
+                        <a href="#" class="delete-link" data-url="@Url.Action("DeleteBorrow", "Home", new { id = item.borrowId })">Delete</a>
+                    </td>
+                </tr>
+            }
+        </table>
+        Page @ViewBag.PageNumber3 of @ViewBag.TotalPages3
+
+        @Html.PagedListPager(Model.Borrows2, page3 => Url.Action("Maintenance", new { page3 }))
+    </div>
+
+</div>
+
+<div id="myModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Maintenance - CRUD</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-content">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        // Function to handle Edit link click event in the Combined View and Details modal
+        $(".edit-link, .edit-link-in-modal").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+
+        // Function to handle form submission within the modal
+        $("#modal-content").on("submit", "form", function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr("action");
+            var formData = form.serialize();
+
+            $.post(url, formData, function (data) {
+                $("#myModal").modal("hide");
+                location.reload();
+            });
+        });
+
+        // Function to handle other links (details, delete, create) within the modal
+        $(".details-link, .delete-link, .create-link").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+</script>

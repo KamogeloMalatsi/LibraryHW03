@@ -1,0 +1,51 @@
+﻿@model KamogeloLibrary.Models.borrows
+
+@{
+    Layout = null;
+}
+
+<div>
+    <h5>Borrow</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.takenDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.takenDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.broughtDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.broughtDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.books.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.books.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.students.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.students.name)
+        </dd>
+
+    </dl>
+</div>
+@*<p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.borrowId }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>*@
+<p>
+    <a href="@Url.Action("Maintenance", "Home")" class="btn btn-primary btn-sm">Back to List</a>
+</p>

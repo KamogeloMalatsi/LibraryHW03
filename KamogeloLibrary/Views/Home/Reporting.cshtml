@@ -1,0 +1,179 @@
+﻿@using KamogeloLibrary.Models
+@model List<FileModel>
+@{
+    ViewBag.Title = "Reporting";
+}
+
+<link href="~/Content/Site.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/scripts/tinymce/tinymce.min.js"></script>
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+
+<div class="border border-secondary rounded-3" style="padding:10px">
+    <h5><b>REPORT</b></h5>
+    <div class="d-flex justify-content-start" style="padding-top: 10px;">
+        <div class="btn-group">
+            <div style="padding-right: 15px;">
+                <input type="number" id="year" name="year" class="form-control" min="2015" max="2017" style="width: 300px;" placeholder="Enter year to search">
+            </div>
+            <div style="padding-right: 15px; padding-left: 15px;">
+                <button id="search" class="btn btn-success">Search</button>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="d-flex justify-content-center">
+        <div id="chartContainer" style="height: 370px; width: 80%;"></div>
+    </div>
+    <br />
+    @using (Html.BeginForm("SAVE", "Home", FormMethod.Post))
+    {
+        <div class="row row-cols-2">
+            <div class="col">
+                <textarea id="content file-editor" name="content" rows="3" cols="100" placeholder="Please write the file description here"></textarea>
+            </div>
+            <div class="col">
+                <div id="file-generator" class="d-flex justify-content-end" style="padding-top: 10px;">
+                    <div class="btn-group">
+                        <div style="padding-right: 15px;">
+                            <input type="text" id="fileName" name="fileName" class="form-control" style="width: 300px;" placeholder="Add File Name">
+                        </div>
+                        <select name="extension" id="extension" class="form-control" style="width:150px">
+                            <option value=".pdf">PDF</option>
+                            <option value=".docx">DOCX</option>
+                            <option value=".xps">XPS</option>
+                            <option value=".html">HTML</option>
+                            <option value=".mhtml">MHTML</option>
+                            <option value=".rtf">RTF</option>
+                            <option value=".xml">XML</option>
+                            <option value=".txt">TXT</option>
+                            <option value=".png">PNG</option>
+                            <option value=".jpeg">JPEG</option>
+                            <option value=".gif">GIF</option>
+                            <option value=".bmp">BMP</option>
+                            <option value=".tiff">TIFF</option>
+                            <option value=".wmp">WMP</option>
+                        </select>
+                        <div style="padding-right: 15px; padding-left: 15px;">
+                            <input type="submit" class="btn btn-primary" value="Save" style="width: 150px;" disabled />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<br />
+<br />
+<div class="border border-secondary rounded-3" style="padding:10px">
+    <h5><b>ARCHIVE</b></h5>
+    <div style="height: 400px; overflow: auto;">
+        <table class="table table-hover">
+            <thead style="position: sticky; top: 0; background-color: lightgrey;">
+                <tr>
+                    <th width="75%">FILE NAME</th>
+                    <th>DOWNLOAD</th>
+                    <th>DELETE</th>
+                </tr>
+            </thead>
+            @foreach (var file in Model)
+            {
+                <tr>
+                    <td>@file.FileName</td>
+                    <td class="t">@Html.ActionLink("Download", "DownloadFile", new { fileName = file.FileName }, new { @class = "btn btn-success btn-sm", style = "width: 150px;" })</td>
+                    <td class="t">@Html.ActionLink("Delete", "DeleteFile", new { fileName = file.FileName }, new { @class = "btn btn-danger btn-sm", style = "width: 150px;" })</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            title: {
+                text: "Top 10 Frequently Borrowed Books"
+            },
+            axisY: {
+                title: "Total borrows per book over the years",
+                gridThickness: 0
+            },
+            data: [{
+                type: "column",
+                dataPoints: @Html.Raw(ViewBag.DataPoints),
+            }]
+        });
+        chart.render();
+    });
+
+    $(document).ready(function () {
+        var fileNameField = $("input[name='fileName']");
+        fileNameField.on("input", function () {
+            var fileName = fileNameField.val();
+            var saveButton = $("input[type='submit'][value='Save']");
+            if (fileName.length > 0) {
+                saveButton.prop("disabled", false);
+            }
+            else {
+                saveButton.prop("disabled", true);
+            }
+        });
+    });
+
+
+    $(document).ready(function () {
+        $("#search").click(function () {
+            var selectedYear = $("#year").val();
+            if (selectedYear) {
+                $.get('@Url.Action("GetDataByYear", "Home")', { selectedYear: selectedYear })
+                    .done(function (data) {
+                        var chart = new CanvasJS.Chart("chartContainer", {
+                            animationEnabled: true,
+                            title: {
+                                text: "Top 10 Frequently Borrowed Books in " + selectedYear
+                            },
+                            axisY: {
+                                title: "Total borrows per book",
+                                gridThickness: 0
+                            },
+                            data: [{
+                                type: "column",
+                                dataPoints: data,
+                            }]
+                        });
+                        chart.render();
+                    });
+            } else {
+                var chart = new CanvasJS.Chart("chartContainer", {
+                    animationEnabled: true,
+                    title: {
+                        text: "Top 10 Frequently Borrowed Books"
+                    },
+                    axisY: {
+                        title: "Total borrows per book over the years",
+                        gridThickness: 0
+                    },
+                    data: [{
+                        type: "column",
+                        dataPoints: @Html.Raw(ViewBag.DataPoints),
+                    }]
+                });
+                chart.render();
+            }
+        });
+    });
+
+    //tinymce.init({
+    //    //selector: 'textarea',  // change this value according to your HTML
+    //    toolbar: [
+    //        { name: 'history', items: ['undo', 'redo'] },
+    //        //{ name: 'styles', items: ['styles'] },
+    //        //{ name: 'formatting', items: ['bold', 'italic', 'underlin'] },
+    //        //{ name: 'alignment', items: ['alignleft', 'aligncenter', 'alignright', 'alignjustify'] },
+    //        //{ name: 'indentation', items: ['outdent', 'indent'] }
+    //    ]
+    //});
+</script>

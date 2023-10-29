@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "Report";
+}
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+@*<h2>Report</h2>*@
+
+<div>
+    @*<h5><b>REPORT</b></h5>
+    <label for="year">Select Year (Between 2015 & 2017):</label>
+    <input type="number" id="year" name="year" min="2015" max="2017">
+	<button id="search">SUBMIT</button>*@
+    @*<input type="submit">*@
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+</div>
+
+<div>
+
+</div>
+
+@*<div id="chartContainer" style="height: 370px; width: 100%;"></div>*@
+
+
+<script>
+    window.onload = function () {
+	var chart = new CanvasJS.Chart("chartContainer", {
+		animationEnabled: true,
+		title: {
+			text: "Top 10 Frequently Borrowed Books"
+		},
+		axisY: {
+			title: "Total borrows per book over the years",
+			gridThickness: 0
+		},
+		data: [{
+			type: "column",
+			dataPoints: @Html.Raw(ViewBag.DataPoints),
+		}]
+	});
+	chart.render();
+
+	}
+
+	//document.getElementById('search').addEventListener('click', function () {
+ //           var year = document.getElementById('year').value;
+ //           var url = 'Url.Action("Report", "Home")' +
+ //               '?selectedYear=' + encodeURIComponent(year) +
+ //           window.location.href = url;
+ //       });
+</script>

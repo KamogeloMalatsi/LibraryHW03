@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light" style="background-color: white; border-bottom: 2px solid black">
+        <div class="container">
+            @*@Html.ActionLink("Library", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+            <a href="@Url.Action("Index","Home")"><img src="~/Images/Logo.JPG" style="width:50%" /></a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-start">
+                <ul class="navbar-nav flex-grow-1">
+                    <li><b>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</b></li>
+                    <li><b>@Html.ActionLink("Maintenance", "Maintenance", "Home", new { area = "" }, new { @class = "nav-link" })</b></li>
+                    <li><b>@Html.ActionLink("Report", "Reporting", "Home", new { area = "" }, new { @class = "nav-link" })</b></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script>
+        // Function to apply Bootstrap classes based on element type
+        function applyBootstrapStyles() {
+            // Apply Bootstrap table class to all tables
+            $('table').addClass('table');
+
+            // Apply Bootstrap button styles based on action names
+            //$('a:contains("Create")').addClass('btn btn-success btn-sm');
+            $('a:contains("Edit")').addClass('btn btn-secondary btn-sm');
+            $('a:contains("Details")').addClass('btn btn-secondary btn-sm');
+            $('a:contains("Delete")').addClass('btn btn-secondary btn-sm');
+        }
+
+        $(document).ready(function () {
+            applyBootstrapStyles();
+        });
+    </script>
+
+</body>
+</html>
